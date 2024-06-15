@@ -1,1 +1,214 @@
+#include <stdio.h>
+#include <stdbool.h>
+#include <string.h>
+
+float saldo = 1000.0;
+char pinDefault[] = "1234";
+
+void tampilkanMenu() {
+    printf("\nMenu Transaksi:\n");
+    printf("1. Cek Saldo\n");
+    printf("2. Tarik Tunai\n");
+    printf("3. Setor Tunai\n");
+    printf("4. Top Up\n");
+    printf("5. Transfer\n");
+    printf("6. Keluar\n");
+    printf("Pilih transaksi: ");
+}
+
+bool periksaPIN(char *pin) {
+    return strcmp(pin, pinDefault) == 0;
+}
+
+void cekSaldo() {
+    char pinInput[5];
+    printf("Masukkan PIN Anda untuk melanjutkan: ");
+    scanf("%s", pinInput);
+    if (!periksaPIN(pinInput)) {
+        printf("PIN salah. Transaksi dibatalkan.\n");
+        return;
+    }
+    printf("Saldo Anda saat ini: %.2f\n", saldo);
+}
+
+void tarikTunai() {
+    char pinInput[5];
+    printf("Masukkan PIN Anda untuk melanjutkan: ");
+    scanf("%s", pinInput);
+    if (!periksaPIN(pinInput)) {
+        printf("PIN salah. Transaksi dibatalkan.\n");
+        return;
+    }
+
+    float jumlah;
+    printf("Masukkan jumlah yang ingin Anda tarik: ");
+    scanf("%f", &jumlah);
+    if (jumlah > saldo) {
+        printf("Saldo tidak mencukupi.\n");
+    } else {
+        saldo -= jumlah;
+        printf("Penarikan berhasil. Saldo Anda sekarang: %.2f\n", saldo);
+    }
+}
+
+void setorTunai() {
+    char pinInput[5];
+    printf("Masukkan PIN Anda untuk melanjutkan: ");
+    scanf("%s", pinInput);
+    if (!periksaPIN(pinInput)) {
+        printf("PIN salah. Transaksi dibatalkan.\n");
+        return;
+    }
+
+    float jumlah;
+    printf("Masukkan jumlah yang ingin Anda setor: ");
+    scanf("%f", &jumlah);
+    saldo += jumlah;
+    printf("Setor tunai berhasil. Saldo Anda sekarang: %.2f\n", saldo);
+}
+
+void topUp() {
+
+    int metode;
+    printf("\nMetode Top Up:\n");
+    printf("1. Dana\n");
+    printf("2. GoPay\n");
+    printf("3. OVO\n");
+    printf("Pilih metode top up: ");
+    scanf("%d", &metode);
+
+    char id[20];
+    switch (metode) {
+        case 1:
+            printf("Masukkan ID Dana Anda: ");
+            break;
+        case 2:
+            printf("Masukkan ID GoPay Anda: ");
+            break;
+        case 3:
+            printf("Masukkan ID OVO Anda: ");
+            break;
+        default:
+            printf("Pilihan tidak valid.\n");
+            return;
+    }
+    scanf("%s", id);
+
+    float jumlah;
+    printf("Masukkan jumlah yang ingin Anda top up: ");
+    scanf("%f", &jumlah);
+  	
+	char pinInput[5];
+    printf("Masukkan PIN Anda untuk melanjutkan: ");
+    scanf("%s", pinInput);
+    if (!periksaPIN(pinInput)) {
+        printf("PIN salah. Transaksi dibatalkan.\n");
+        return;
+    }
+    
+    if (jumlah <= 0) {
+        printf("Jumlah top up harus lebih besar dari 0.\n");
+        return;
+    }
+
+    if (jumlah > saldo) {
+        printf("Saldo tidak mencukupi.\n");
+        return;
+    }
+
+    saldo -= jumlah;
+
+    switch (metode) {
+        case 1:
+            printf("Top up Dana berhasil untuk ID Dana %s.\nSaldo Anda sekarang: %.2f\n", id, saldo);
+            break;
+        case 2:
+            printf("Top up GoPay berhasil untuk ID GoPay %s.\nSaldo Anda sekarang: %.2f\n", id, saldo);
+            break;
+        case 3:
+            printf("Top up OVO berhasil untuk ID OVO %s. Saldo\nAnda sekarang: %.2f\n", id, saldo);
+            break;
+        default:
+            printf("Pilihan tidak valid.\n");
+            break;
+    }
+}
+
+void transfer() {
+    char pinInput[5];
+    printf("Masukkan PIN Anda untuk melanjutkan: ");
+    scanf("%s", pinInput);
+    if (!periksaPIN(pinInput)) {
+        printf("PIN salah. Transaksi dibatalkan.\n");
+        return;
+    }
+
+    char idPenerima[20];
+    printf("Masukkan ID penerima: ");
+    scanf("%s", idPenerima);
+
+    float jumlah;
+    printf("Masukkan jumlah yang ingin Anda transfer: ");
+    scanf("%f", &jumlah);
+
+    if (jumlah <= 0) {
+        printf("Jumlah transfer harus lebih besar dari 0.\n");
+        return;
+    }
+
+    if (jumlah > saldo) {
+        printf("Saldo tidak mencukupi.\n");
+        return;
+    }
+
+    saldo -= jumlah;
+    printf("Transfer berhasil ke ID %s sebesar %.2f.\nSaldo Anda sekarang: %.2f\n", idPenerima, jumlah, saldo);
+}
+
+int main() {
+    char pinInput[5];
+    do {
+    	printf("===================\n");
+    	printf("===BANK KEVIN===\n");
+    	printf("===================\n");
+        printf("Masukkan PIN Anda: ");
+        scanf("%s", pinInput);
+        if (!periksaPIN(pinInput)) {
+            printf("PIN salah. Silakan coba lagi.\n");
+        }
+    } while (!periksaPIN(pinInput));
+
+    printf("Login berhasil.\n");
+
+    int pilihan;
+    do {
+        tampilkanMenu();
+        scanf("%d", &pilihan);
+
+        switch (pilihan) {
+            case 1:
+                cekSaldo();
+                break;
+            case 2:
+                tarikTunai();
+                break;
+            case 3:
+                setorTunai();
+                break;
+            case 4:
+                topUp();
+                break;
+            case 5:
+                transfer();
+                break;
+            case 6:
+                printf("Terima kasih telah menggunakan layanan kami.\n");
+                break;
+            default:
+                printf("Pilihan tidak valid. Silakan pilih kembali.\n");
+        }
+    } while (pilihan != 6);
+
+    return 0;
+}
 
